@@ -1,0 +1,6 @@
+name = "workshop-live"
+compatibility_date = "2025-03-21"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+NEXT_PUBLIC_APP_URL = "https://cloudflare-workers-autoconfig-workshop-live.jzegarrag.workers.dev"

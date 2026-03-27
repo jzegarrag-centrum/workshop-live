@@ -3,6 +3,7 @@ node_modules/
 .env.local
 .env
 .env.*.local
+.dev.vars
 out/
 
 # Playwright test artifacts
