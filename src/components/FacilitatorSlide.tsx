@@ -174,13 +174,13 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white rounded-lg p-3 shadow-sm border-t-[3px] border-red-500">
               <h4 className="text-red-600 font-bold text-xs mb-1">El problema</h4>
-              <p className="text-[9px] text-gray-600">
+              <p className="text-xs text-gray-600">
                 La información de talento está <b>fragmentada en múltiples sistemas</b>. No hay visibilidad analítica sobre skills, certificaciones y trayectorias reales del staff.
               </p>
             </div>
             <div className="bg-white rounded-lg p-3 shadow-sm border-t-[3px] border-green-500">
               <h4 className="text-green-600 font-bold text-xs mb-1">La oportunidad</h4>
-              <p className="text-[9px] text-gray-600">
+              <p className="text-xs text-gray-600">
                 Un sistema de People Intelligence permite <b>decisiones basadas en datos</b>, asignación inteligente y desarrollo estratégico del talento académico.
               </p>
             </div>
@@ -199,15 +199,15 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
         <div className="slide flex flex-col justify-center p-6">
           <Pill text="Bloque 1 · Descubrir" bg="#FF6B00" />
           <h2 className="text-xl font-extrabold text-navy my-2">Transaccional vs. Analítica</h2>
-          <p className="text-[10px] text-gray-500 mb-3">Hay dos mundos de datos. No los vamos a mezclar — los vamos a <b className="text-navy">conectar</b>.</p>
+          <p className="text-xs text-gray-500 mb-3">Hay dos mundos de datos. No los vamos a mezclar — los vamos a <b className="text-navy">conectar</b>.</p>
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white rounded-lg p-3 shadow-sm border-t-[3px] border-orange">
               <h4 className="text-orange font-bold text-xs mb-1">OLTP — Transaccional</h4>
-              <p className="text-[9px] text-gray-600">Los sistemas del día a día: registrar un grado, actualizar un CV, asignar un curso. Cada acción individual.</p>
+              <p className="text-xs text-gray-600">Los sistemas del día a día: registrar un grado, actualizar un CV, asignar un curso. Cada acción individual.</p>
             </div>
             <div className="bg-white rounded-lg p-3 shadow-sm border-t-[3px] border-teal">
               <h4 className="text-teal font-bold text-xs mb-1">OLAP — Analítica</h4>
-              <p className="text-[9px] text-gray-600">La capa inteligente: ¿cuántos docentes tienen PhD? ¿Qué skills faltan? Análisis, patrones, dashboards.</p>
+              <p className="text-xs text-gray-600">La capa inteligente: ¿cuántos docentes tienen PhD? ¿Qué skills faltan? Análisis, patrones, dashboards.</p>
             </div>
           </div>
           <Footer />
@@ -311,7 +311,7 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
             ))}
           </div>
           <div className="mt-2 bg-navy/5 p-2 rounded-lg text-center">
-            <p className="text-[9px] text-gray-500">Patrones: <b className="text-navy">Centralización</b> · <b className="text-navy">Automatización</b> · <b className="text-navy">Visibilidad</b></p>
+            <p className="text-xs text-gray-500">Patrones: <b className="text-navy">Centralización</b> · <b className="text-navy">Automatización</b> · <b className="text-navy">Visibilidad</b></p>
           </div>
           <Footer />
         </div>
@@ -336,9 +336,9 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
             ))}
           </div>
           {synthesis ? (
-            <div className="ai-box">
-              <p className="text-[8px] font-bold text-indigo-500 tracking-wider mb-1">GENERADO POR CLAUDE</p>
-              <p className="text-[10px] text-gray-700 leading-relaxed">{synthesis}</p>
+            <div className="ai-box flex-1">
+              <p className="text-[10px] font-bold text-indigo-500 tracking-wider mb-2">GENERADO POR CLAUDE</p>
+              <p className="text-sm text-gray-700 leading-relaxed">{synthesis}</p>
             </div>
           ) : (
             <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
@@ -361,11 +361,11 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
           <div className="grid grid-cols-2 gap-4 max-w-lg">
             <div className="bg-white/10 rounded-lg p-3">
               <p className="text-orange font-bold text-xs mb-1">Parte A</p>
-              <p className="text-gray-300 text-[10px]">Operaciones: qué acciones cotidianas debe soportar</p>
+              <p className="text-gray-300 text-xs">Operaciones: qué acciones cotidianas debe soportar</p>
             </div>
             <div className="bg-white/10 rounded-lg p-3">
               <p className="text-teal font-bold text-xs mb-1">Parte B</p>
-              <p className="text-gray-300 text-[10px]">Preguntas: qué necesitan responder con datos</p>
+              <p className="text-gray-300 text-xs">Preguntas: qué necesitan responder con datos</p>
             </div>
           </div>
         </div>
@@ -382,12 +382,12 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
             <div className="bg-white rounded-lg p-4 shadow-sm border-t-[3px] border-orange text-center">
               <div className="w-10 h-10 rounded-full bg-orange text-white flex items-center justify-center mx-auto mb-2 text-xl">⚙️</div>
               <h4 className="text-orange font-bold text-sm mb-1">Operaciones (OLTP)</h4>
-              <p className="text-[9px] text-gray-500">Las acciones del día a día: registrar, actualizar, asignar. Lo que la gente <b>hace</b>.</p>
+              <p className="text-xs text-gray-500">Las acciones del día a día: registrar, actualizar, asignar. Lo que la gente <b>hace</b>.</p>
             </div>
             <div className="bg-white rounded-lg p-4 shadow-sm border-t-[3px] border-teal text-center">
               <div className="w-10 h-10 rounded-full bg-teal text-white flex items-center justify-center mx-auto mb-2 text-xl">📊</div>
               <h4 className="text-teal font-bold text-sm mb-1">Preguntas (OLAP)</h4>
-              <p className="text-[9px] text-gray-500">Lo que necesitan responder: ¿cuántos? ¿quiénes? ¿qué falta? Lo que la gente <b>necesita saber</b>.</p>
+              <p className="text-xs text-gray-500">Lo que necesitan responder: ¿cuántos? ¿quiénes? ¿qué falta? Lo que la gente <b>necesita saber</b>.</p>
             </div>
           </div>
           <Footer />
@@ -401,7 +401,7 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
           <div className="absolute top-0 left-0 right-0 h-1 bg-orange" />
           <Pill text="Bloque 2A · Operaciones" bg="#FF6B00" />
           <h2 className="text-xl font-extrabold text-white mt-4 mb-2">Imaginen que llega un<br />nuevo colaborador</h2>
-          <p className="text-gray-400 text-[11px] mt-2 leading-relaxed max-w-md">
+          <p className="text-gray-400 text-sm mt-2 leading-relaxed max-w-md">
             ¿Qué acciones tiene que hacer GTH en sus sistemas?<br />
             ¿Qué datos hay que registrar?<br />
             ¿Qué pasos son manuales hoy?
@@ -508,9 +508,9 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
             </div>
           )}
           {synthesis ? (
-            <div className="ai-box">
-              <p className="text-[8px] font-bold text-indigo-500 tracking-wider mb-1">GENERADO POR CLAUDE</p>
-              <p className="text-[10px] text-gray-700 leading-relaxed">{synthesis}</p>
+            <div className="ai-box flex-1">
+              <p className="text-[10px] font-bold text-indigo-500 tracking-wider mb-2">GENERADO POR CLAUDE</p>
+              <p className="text-sm text-gray-700 leading-relaxed">{synthesis}</p>
             </div>
           ) : (
             <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
@@ -528,7 +528,7 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
           <div className="absolute top-0 left-0 right-0 h-1 bg-orange" />
           <Pill text="Bloque 2B · Preguntas" bg="#0D9488" />
           <h2 className="text-xl font-extrabold text-white mt-4 mb-2">¿Qué preguntas necesitan<br /><span className="text-teal">responder con datos</span>?</h2>
-          <p className="text-gray-400 text-[11px] mt-2 leading-relaxed max-w-md">
+          <p className="text-gray-400 text-sm mt-2 leading-relaxed max-w-md">
             Ahora pensemos en lo analítico: reportes, indicadores, dashboards.<br />
             ¿Qué necesitan saber que hoy no pueden responder fácilmente?
           </p>
@@ -675,9 +675,9 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
             </div>
           )}
           {synthesis ? (
-            <div className="ai-box">
-              <p className="text-[8px] font-bold text-indigo-500 tracking-wider mb-1">GENERADO POR CLAUDE</p>
-              <p className="text-[10px] text-gray-700 leading-relaxed">{synthesis}</p>
+            <div className="ai-box flex-1">
+              <p className="text-[10px] font-bold text-indigo-500 tracking-wider mb-2">GENERADO POR CLAUDE</p>
+              <p className="text-sm text-gray-700 leading-relaxed">{synthesis}</p>
             </div>
           ) : (
             <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
@@ -726,7 +726,7 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
               <div key={d.n} className="bg-white rounded-lg p-4 shadow-sm text-center">
                 <div className={`w-8 h-8 rounded-full ${d.c} text-white flex items-center justify-center mx-auto mb-2 text-sm font-bold`}>{d.n}</div>
                 <h5 className="font-bold text-sm text-gray-700 mb-1">{d.t}</h5>
-                <p className="text-[9px] text-gray-500">{d.d}</p>
+                <p className="text-xs text-gray-500">{d.d}</p>
               </div>
             ))}
           </div>
@@ -845,9 +845,9 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
             </div>
           )}
           {synthesis ? (
-            <div className="ai-box">
-              <p className="text-[8px] font-bold text-indigo-500 tracking-wider mb-1">GENERADO POR CLAUDE</p>
-              <p className="text-[10px] text-gray-700 leading-relaxed">{synthesis}</p>
+            <div className="ai-box flex-1">
+              <p className="text-[10px] font-bold text-indigo-500 tracking-wider mb-2">GENERADO POR CLAUDE</p>
+              <p className="text-sm text-gray-700 leading-relaxed">{synthesis}</p>
             </div>
           ) : (
             <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
@@ -869,12 +869,12 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
             <div className="bg-white rounded-lg p-4 shadow-sm border-t-[3px] border-green-500 text-center">
               <p className="text-xl mb-1">🔮</p>
               <h4 className="text-green-600 font-bold text-sm mb-1">Predictivo</h4>
-              <p className="text-[9px] text-gray-500">El diseño del sistema anticipará necesidades. Gobernanza de datos, taxonomías, esquemas.</p>
+              <p className="text-xs text-gray-500">El diseño del sistema anticipará necesidades. Gobernanza de datos, taxonomías, esquemas.</p>
             </div>
             <div className="bg-white rounded-lg p-4 shadow-sm border-t-[3px] border-orange text-center">
               <p className="text-xl mb-1">🔄</p>
               <h4 className="text-orange font-bold text-sm mb-1">Adaptativo</h4>
-              <p className="text-[9px] text-gray-500">La ejecución será ágil. Sprints, entregables incrementales, retroalimentación permanente.</p>
+              <p className="text-xs text-gray-500">La ejecución será ágil. Sprints, entregables incrementales, retroalimentación permanente.</p>
             </div>
           </div>
           <Footer />
@@ -887,7 +887,7 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
         <div className="slide flex flex-col justify-center p-6">
           <Pill text="Bloque 4 · Gestión" bg="#059669" />
           <h2 className="text-lg font-extrabold text-navy mb-2">Dónde estamos</h2>
-          <p className="text-[10px] text-gray-500 mb-2">El proyecto tiene un charter aprobado y estamos transitando de Iniciación a Planificación. Los insumos de hoy alimentan directamente los artefactos de planificación.</p>
+          <p className="text-xs text-gray-500 mb-2">El proyecto tiene un charter aprobado y estamos transitando de Iniciación a Planificación. Los insumos de hoy alimentan directamente los artefactos de planificación.</p>
           <div className="flex gap-1.5 flex-wrap mb-3">
             <span className="bg-green-500 text-white px-2 py-0.5 rounded-full text-[9px] font-semibold">Iniciación (completada)</span>
             <span className="bg-orange text-white px-2 py-0.5 rounded-full text-[9px] font-semibold">Planificación (en curso)</span>
@@ -912,11 +912,11 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white rounded-lg p-4 shadow-sm text-center border-t-[3px] border-navy">
               <h4 className="text-navy font-bold text-sm mb-1">Notion</h4>
-              <p className="text-[9px] text-gray-500">Gestión del proyecto: tareas, backlog, seguimiento de decisiones y avances.</p>
+              <p className="text-xs text-gray-500">Gestión del proyecto: tareas, backlog, seguimiento de decisiones y avances.</p>
             </div>
             <div className="bg-white rounded-lg p-4 shadow-sm text-center border-t-[3px] border-teal">
               <h4 className="text-teal font-bold text-sm mb-1">Google Drive</h4>
-              <p className="text-[9px] text-gray-500">Documentos compartidos: actas, entregables, archivos de referencia.</p>
+              <p className="text-xs text-gray-500">Documentos compartidos: actas, entregables, archivos de referencia.</p>
             </div>
           </div>
           <p className="text-center text-[10px] text-navy font-semibold mt-3">Les enviaremos los accesos hoy mismo.</p>
