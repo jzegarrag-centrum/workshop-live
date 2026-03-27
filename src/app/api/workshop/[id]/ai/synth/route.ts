@@ -26,32 +26,37 @@ export async function POST(
     let datos = '';
     let blockLabel = '';
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const anyResponses = responses as any[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const anyArtifacts = artifacts as any[];
+
     if (block === 'b1') {
       blockLabel = 'Bloque 1 — Descubrir';
-      const b1 = responses.filter((r: { block: string }) => r.block === 'b1_write');
-      datos = b1.map((r: { display_name: string; payload: { q1?: { question?: string; answer?: string }; q2?: { question?: string; answer?: string }; q3?: { question?: string; answer?: string } } }) =>
+      const b1 = anyResponses.filter((r) => r.block === 'b1_write');
+      datos = b1.map((r) =>
         `${r.display_name}:\n  1. ${r.payload.q1?.question}: ${r.payload.q1?.answer}\n  2. ${r.payload.q2?.question}: ${r.payload.q2?.answer}\n  3. ${r.payload.q3?.question}: ${r.payload.q3?.answer}`
       ).join('\n\n');
     } else if (block === 'b2a') {
       blockLabel = 'Bloque 2A — Operaciones';
-      const ops = artifacts.find((a: { artifact_type: string }) => a.artifact_type === 'operations');
+      const ops = anyArtifacts.find((a) => a.artifact_type === 'operations');
       datos = ops?.payload?.items?.map(
-        (o: { operation: string; description: string; process: string; origin?: string }) =>
-          `- ${o.operation} (${o.process}): ${o.description} [${o.origin || 'gth'}]`
+        (o: { title: string; detail: string; process?: string; origin?: string }) =>
+          `- ${o.title}${o.process ? ` (${o.process})` : ''}: ${o.detail} [${o.origin || 'gth'}]`
       ).join('\n') || 'Sin datos';
     } else if (block === 'b2b') {
       blockLabel = 'Bloque 2B — Preguntas';
-      const qs = artifacts.find((a: { artifact_type: string }) => a.artifact_type === 'questions');
+      const qs = anyArtifacts.find((a) => a.artifact_type === 'questions');
       datos = qs?.payload?.items?.map(
-        (q: { actor: string; question: string; origin?: string }) =>
-          `- [${q.actor}] ${q.question} [${q.origin || 'gth'}]`
+        (q: { actor: string; title: string; origin?: string }) =>
+          `- [${q.actor}] ${q.title} [${q.origin || 'gth'}]`
       ).join('\n') || 'Sin datos';
     } else if (block === 'b3') {
       blockLabel = 'Bloque 3 — Datos';
-      const fields = artifacts.find((a: { artifact_type: string }) => a.artifact_type === 'data_fields');
+      const fields = anyArtifacts.find((a) => a.artifact_type === 'data_fields');
       datos = fields?.payload?.items?.map(
-        (f: { field_name: string; description: string; source?: string; priority?: string }) =>
-          `- ${f.field_name}: ${f.description} [fuente: ${f.source || '?'}, prioridad: ${f.priority || '?'}]`
+        (f: { title: string; detail: string; source?: string; priority?: string }) =>
+          `- ${f.title}: ${f.detail} [fuente: ${f.source || '?'}, prioridad: ${f.priority || '?'}]`
       ).join('\n') || 'Sin datos';
     } else {
       return NextResponse.json({ error: 'Bloque no soportado' }, { status: 400 });

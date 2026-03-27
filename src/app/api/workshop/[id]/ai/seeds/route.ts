@@ -23,9 +23,12 @@ export async function POST(
     `;
 
     // Build context
-    const b1Responses = responses.filter((r: { block: string }) => r.block === 'b1_write');
-    const operations = artifacts.find((a: { artifact_type: string }) => a.artifact_type === 'operations');
-    const questions = artifacts.find((a: { artifact_type: string }) => a.artifact_type === 'questions');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const b1Responses = (responses as any[]).filter((r) => r.block === 'b1_write');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const operations = (artifacts as any[]).find((a) => a.artifact_type === 'operations');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const questions = (artifacts as any[]).find((a) => a.artifact_type === 'questions');
 
     let prompt = '';
     let artifactType = '';
@@ -108,7 +111,8 @@ Responde SOLO en JSON: { "seeds": [{ "title": "nombre del campo", "detail": "des
 
     // Store seeds as artifact
     if (seeds.length > 0) {
-      const existingItems = (block === 'b2b' ? questions : artifacts.find((a: { artifact_type: string }) => a.artifact_type === artifactType))?.payload?.items || [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const existingItems = (block === 'b2b' ? questions : (artifacts as any[]).find((a) => a.artifact_type === artifactType))?.payload?.items || [];
       const mergedItems = [...existingItems, ...seeds.map((s: Record<string, string>) => ({ ...s, origin: 'ai' }))];
 
       await sql`
