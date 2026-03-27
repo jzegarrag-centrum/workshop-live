@@ -11,3 +11,4 @@ out/
 # Screenshots / PDFs generated during testing
 *.png
 *.pdf
+!public/**
