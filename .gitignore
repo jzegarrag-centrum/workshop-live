@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.env.local
+.env
+.env.*.local
+out/
+
+# Playwright test artifacts
+.playwright-cli/
+
+# Screenshots / PDFs generated during testing
+*.png
+*.pdf
