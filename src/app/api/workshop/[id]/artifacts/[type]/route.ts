@@ -5,12 +5,13 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { id: string; type: string } }
+  { params }: { params: Promise<{ id: string; type: string }> }
 ) {
   try {
+    const { id, type } = await params;
     const rows = await sql`
       SELECT * FROM workshop_artifacts
-      WHERE session_id = ${params.id} AND artifact_type = ${params.type}
+      WHERE session_id = ${id} AND artifact_type = ${type}
       ORDER BY version DESC LIMIT 1
     `;
     if (rows.length === 0) {
@@ -25,22 +26,23 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string; type: string } }
+  { params }: { params: Promise<{ id: string; type: string }> }
 ) {
   try {
+    const { id, type } = await params;
     const { payload } = await request.json();
 
     // Get current version
     const current = await sql`
       SELECT version FROM workshop_artifacts
-      WHERE session_id = ${params.id} AND artifact_type = ${params.type}
+      WHERE session_id = ${id} AND artifact_type = ${type}
       ORDER BY version DESC LIMIT 1
     `;
     const nextVersion = current.length > 0 ? current[0].version + 1 : 1;
 
     await sql`
       INSERT INTO workshop_artifacts (session_id, artifact_type, payload, version)
-      VALUES (${params.id}, ${params.type}, ${JSON.stringify(payload)}::jsonb, ${nextVersion})
+      VALUES (${id}, ${type}, ${JSON.stringify(payload)}::jsonb, ${nextVersion})
     `;
 
     return NextResponse.json({ ok: true, version: nextVersion });

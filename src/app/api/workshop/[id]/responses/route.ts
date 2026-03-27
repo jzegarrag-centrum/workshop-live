@@ -6,9 +6,10 @@ export const dynamic = 'force-dynamic';
 // GET responses for a session, optionally filtered by block
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const block = request.nextUrl.searchParams.get('block');
     let rows;
     if (block) {
@@ -16,7 +17,7 @@ export async function GET(
         SELECT r.*, p.display_name
         FROM workshop_responses r
         JOIN workshop_participants p ON p.id = r.participant_id
-        WHERE r.session_id = ${params.id} AND r.block = ${block}
+        WHERE r.session_id = ${id} AND r.block = ${block}
         ORDER BY r.updated_at DESC
       `;
     } else {
@@ -24,7 +25,7 @@ export async function GET(
         SELECT r.*, p.display_name
         FROM workshop_responses r
         JOIN workshop_participants p ON p.id = r.participant_id
-        WHERE r.session_id = ${params.id}
+        WHERE r.session_id = ${id}
         ORDER BY r.block, r.updated_at DESC
       `;
     }
@@ -38,9 +39,10 @@ export async function GET(
 // POST — upsert a response (participant writes)
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { participant_id, block, payload } = await request.json();
     if (!participant_id || !block || !payload) {
       return NextResponse.json({ error: 'Faltan campos requeridos' }, { status: 400 });
@@ -48,7 +50,7 @@ export async function POST(
 
     await sql`
       INSERT INTO workshop_responses (session_id, participant_id, block, payload)
-      VALUES (${params.id}, ${participant_id}, ${block}, ${JSON.stringify(payload)}::jsonb)
+      VALUES (${id}, ${participant_id}, ${block}, ${JSON.stringify(payload)}::jsonb)
       ON CONFLICT (session_id, participant_id, block)
       DO UPDATE SET payload = ${JSON.stringify(payload)}::jsonb, updated_at = NOW()
     `;

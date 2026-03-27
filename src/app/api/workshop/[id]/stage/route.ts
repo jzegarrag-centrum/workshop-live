@@ -5,11 +5,12 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const rows = await sql`
-      SELECT current_stage FROM workshop_sessions WHERE id = ${params.id}
+      SELECT current_stage FROM workshop_sessions WHERE id = ${id}
     `;
     if (rows.length === 0) {
       return NextResponse.json({ error: 'Sesión no encontrada' }, { status: 404 });
@@ -23,12 +24,13 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { stage } = await request.json();
     await sql`
-      UPDATE workshop_sessions SET current_stage = ${stage} WHERE id = ${params.id}
+      UPDATE workshop_sessions SET current_stage = ${stage} WHERE id = ${id}
     `;
     return NextResponse.json({ ok: true, stage });
   } catch (error: unknown) {

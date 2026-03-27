@@ -3,22 +3,23 @@ import { sql } from '@/lib/db';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { block } = await request.json();
 
     // Gather context from previous blocks
     const responses = await sql`
       SELECT r.*, p.display_name FROM workshop_responses r
       JOIN workshop_participants p ON p.id = r.participant_id
-      WHERE r.session_id = ${params.id}
+      WHERE r.session_id = ${id}
       ORDER BY r.block
     `;
 
     const artifacts = await sql`
       SELECT * FROM workshop_artifacts
-      WHERE session_id = ${params.id}
+      WHERE session_id = ${id}
       ORDER BY artifact_type, version DESC
     `;
 
@@ -117,7 +118,7 @@ Responde SOLO en JSON: { "seeds": [{ "title": "nombre del campo", "detail": "des
 
       await sql`
         INSERT INTO workshop_artifacts (session_id, artifact_type, payload, version)
-        VALUES (${params.id}, ${artifactType}, ${JSON.stringify({ items: mergedItems })}::jsonb, 1)
+        VALUES (${id}, ${artifactType}, ${JSON.stringify({ items: mergedItems })}::jsonb, 1)
       `;
     }
 

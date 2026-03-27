@@ -29,9 +29,9 @@ Genera el reporte con secciones claras, hallazgos clave, y recomendaciones. Sé 
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const sessionId = params.id;
+  const { id: sessionId } = await params;
   const { type } = await request.json();
 
   // Gather data

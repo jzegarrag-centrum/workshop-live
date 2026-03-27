@@ -3,22 +3,23 @@ import { sql } from '@/lib/db';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { block } = await request.json();
 
     // Gather all data for this session
     const responses = await sql`
       SELECT r.*, p.display_name FROM workshop_responses r
       JOIN workshop_participants p ON p.id = r.participant_id
-      WHERE r.session_id = ${params.id}
+      WHERE r.session_id = ${id}
       ORDER BY r.block
     `;
 
     const artifacts = await sql`
       SELECT DISTINCT ON (artifact_type) * FROM workshop_artifacts
-      WHERE session_id = ${params.id}
+      WHERE session_id = ${id}
       ORDER BY artifact_type, version DESC
     `;
 
@@ -104,7 +105,7 @@ Responde SOLO con el texto del análisis, sin formato JSON.`;
     const synthType = `${block}_synthesis`;
     await sql`
       INSERT INTO workshop_artifacts (session_id, artifact_type, payload, version)
-      VALUES (${params.id}, ${synthType}, ${JSON.stringify({ text: synthesis })}::jsonb, 1)
+      VALUES (${id}, ${synthType}, ${JSON.stringify({ text: synthesis })}::jsonb, 1)
     `;
 
     return NextResponse.json({ synthesis });

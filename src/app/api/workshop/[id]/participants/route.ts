@@ -5,12 +5,13 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const participants = await sql`
       SELECT id, display_name, role FROM workshop_participants
-      WHERE session_id = ${params.id}
+      WHERE session_id = ${id}
       ORDER BY joined_at
     `;
     return NextResponse.json({ participants });
@@ -22,9 +23,10 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const displayName = String(body.display_name || '').trim();
     if (!displayName) {
@@ -33,7 +35,7 @@ export async function POST(
     const role = String(body.role || 'participant');
     const rows = await sql`
       INSERT INTO workshop_participants (session_id, display_name, role)
-      VALUES (${params.id}, ${displayName}, ${role})
+      VALUES (${id}, ${displayName}, ${role})
       RETURNING id, display_name, role
     `;
     return NextResponse.json({ participant: rows[0] }, { status: 201 });
