@@ -11,6 +11,17 @@ export const STAGES: Stage[] = [
   { id: 'qr', label: '📱 QR', color: '#003865', block: null, interaction: 'none' },
   { id: 'team', label: '👥 Equipo', color: '#003865', block: null, interaction: 'none' },
   { id: 'agenda', label: '📋 Agenda', color: '#003865', block: null, interaction: 'none' },
+  // Intro + B0 — Apertura / Resumen del Proyecto
+  { id: 'intro',    label: '👥 Equipo SC + GTH', color: '#003865', block: null, interaction: 'none' },
+  { id: 'b0div',    label: '📋 B0 Resumen',      color: '#FF6B00', block: 'B0', interaction: 'none' },
+  { id: 'b0world',  label: 'B0 Contexto',        color: '#FF6B00', block: 'B0', interaction: 'none' },
+  { id: 'b0skl',    label: 'B0 Skills-first',    color: '#FF6B00', block: 'B0', interaction: 'none' },
+  { id: 'b0pi',     label: 'B0 PI Qué es',       color: '#FF6B00', block: 'B0', interaction: 'none' },
+  { id: 'b0use',    label: 'B0 Usos',            color: '#FF6B00', block: 'B0', interaction: 'none' },
+  { id: 'b0wef',    label: 'B0 WEF',             color: '#FF6B00', block: 'B0', interaction: 'none' },
+  { id: 'b0phases', label: 'B0 Fases',           color: '#FF6B00', block: 'B0', interaction: 'none' },
+  { id: 'b0scope',  label: 'B0 Alcance',         color: '#FF6B00', block: 'B0', interaction: 'none' },
+  { id: 'b1div',    label: '📌 B1 Inicio',       color: '#003865', block: 'B1', interaction: 'none' },
   // B1 — Descubrir
   { id: 'b1x', label: 'B1 Contexto', color: '#003865', block: 'B1', interaction: 'none' },
   { id: 'b1db', label: 'B1 OLTP/OLAP', color: '#003865', block: 'B1', interaction: 'none' },
@@ -38,6 +49,7 @@ export const STAGES: Stage[] = [
   { id: 'b3fp', label: 'B3 Fuente+Prior', color: '#0D9488', block: 'B3', interaction: 'organize' },
   { id: 'b3y', label: 'B3 Síntesis', color: '#0D9488', block: 'B3', interaction: 'none' },
   // B4 — Gestión
+  { id: 'b4div', label: '📋 B4 Gestión', color: '#059669', block: 'B4', interaction: 'none' },
   { id: 'b4w1', label: 'B4 Gestión', color: '#059669', block: 'B4', interaction: 'none' },
   { id: 'b4w2', label: 'B4 Manual', color: '#059669', block: 'B4', interaction: 'none' },
   { id: 'b4t', label: 'B4 Herramientas', color: '#059669', block: 'B4', interaction: 'links' },

@@ -216,6 +216,32 @@ export default function FacilitatePage() {
     });
   }, [sessionId]);
 
+  // Persist artifact changes from organize slides (drag/drop and priority updates)
+  const updateArtifactsItems = useCallback(async (items: any[]) => {
+    if (!stage?.id) return;
+
+    let artifactType = '';
+    if (['b2a', 'b2a2', 'b2ax', 'b2ay'].includes(stage.id)) artifactType = 'operations';
+    else if (['b2b', 'b2b2', 'b2bx1', 'b2bx2', 'b2by'].includes(stage.id)) artifactType = 'questions';
+    else if (['b3', 'b3fp', 'b3y'].includes(stage.id)) artifactType = 'data_fields';
+    else if (stage.id === 'b4n') artifactType = 'next_steps';
+
+    if (!artifactType) return;
+
+    // Optimistic UI update
+    setArtifacts({ items });
+
+    try {
+      await fetch(`/api/workshop/${sessionId}/artifacts/${artifactType}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payload: { items } }),
+      });
+    } catch {
+      // Silent fail; periodic polling will restore latest server state
+    }
+  }, [sessionId, stage?.id]);
+
   // Keyboard navigation
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -314,6 +340,7 @@ export default function FacilitatePage() {
               synthLoading={synthLoading}
               onTriggerSeeds={['b2bx1', 'b3w1'].includes(stage?.id) ? handleGenerateSeeds : undefined}
               seedsLoading={seedsLoading}
+              onUpdateArtifactsItems={updateArtifactsItems}
             />
           )}
         </div>

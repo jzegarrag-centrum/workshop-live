@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 
 /* ── helpers ── */
@@ -54,13 +54,22 @@ interface SlideProps {
   synthLoading?: boolean;
   onTriggerSeeds?: () => void;
   seedsLoading?: boolean;
+  onUpdateArtifactsItems?: (items: any[]) => void;
 }
 
 /* ── SLIDE CONTENT ── */
-export default function FacilitatorSlide({ stageId, sessionId, responses = [], artifacts, synthesis, participants = [], onTriggerSynthesis, synthLoading, onTriggerSeeds, seedsLoading }: SlideProps) {
+export default function FacilitatorSlide({ stageId, sessionId, responses = [], artifacts, synthesis, participants = [], onTriggerSynthesis, synthLoading, onTriggerSeeds, seedsLoading, onUpdateArtifactsItems }: SlideProps) {
   const participantUrl = typeof window !== 'undefined' && sessionId
     ? `${window.location.origin}/workshop/${sessionId}/participate`
     : sessionId ? `/workshop/${sessionId}/participate` : '';
+  const [dragFromIndex, setDragFromIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [dragContext, setDragContext] = useState<'b2a2' | 'b2b2' | null>(null);
+  const resetDrag = () => {
+    setDragFromIndex(null);
+    setDragOverIndex(null);
+    setDragContext(null);
+  };
   switch (stageId) {
     /* ─── COVER ─── */
     case 'cover':
@@ -144,19 +153,20 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
     case 'agenda':
       return (
         <div className="slide flex flex-col justify-center p-6">
-          <SectionTitle eyebrow="RECORRIDO" title="Agenda del taller" />
-          <div className="grid grid-cols-4 gap-2">
+          <SectionTitle eyebrow="HOY" title="Agenda del taller" />
+          <div className="grid grid-cols-5 gap-2">
             {[
-              { n: '1', t: 'Descubrir', d: 'Visión compartida y expectativas', m: '30 min', c: 'bg-navy' },
-              { n: '2', t: 'Funcionalidades', d: 'Operaciones + preguntas clave', m: '40 min', c: 'bg-orange' },
-              { n: '3', t: 'Datos', d: 'Campos, fuentes y prioridades', m: '25 min', c: 'bg-teal' },
-              { n: '4', t: 'Gestión', d: 'Gobernanza y próximos pasos', m: '20 min', c: 'bg-green' },
+              { t: '15 min', b: 'APERTURA', d: 'Bienvenida + Resumen del Proyecto', sub: 'Presentaci\u00f3n del equipo, contexto general y resumen del PIS definido hasta hoy.', c: 'bg-navy' },
+              { t: '25 min', b: 'BLOQUE 1', d: '\u00bfQu\u00e9 es People Intelligence?', sub: 'Skills-first, WEF Taxonomy y din\u00e1mica de exploraci\u00f3n.', c: 'bg-navy' },
+              { t: '40 min', b: 'BLOQUE 2', d: 'Funcionalidades del sistema', sub: 'Co-creaci\u00f3n de operaciones y preguntas anal\u00edticas.', c: 'bg-orange' },
+              { t: '20 min', b: 'BLOQUE 3', d: 'Campos de datos y fuentes', sub: 'Inventario de campos: qu\u00e9 datos necesita el sistema, d\u00f3nde est\u00e1n y con qu\u00e9 urgencia.', c: 'bg-teal' },
+              { t: '15 min', b: 'BLOQUE 4 + Cierre', d: 'Gesti\u00f3n del proyecto y pr\u00f3ximos pasos', sub: 'Herramientas, fases, reuniones.', c: 'bg-green' },
             ].map(b => (
-              <div key={b.n} className="bg-white rounded-lg p-3 shadow-sm text-center">
-                <div className={`w-7 h-7 rounded-full ${b.c} text-white flex items-center justify-center mx-auto mb-2 text-sm font-bold`}>{b.n}</div>
-                <h5 className="font-bold text-sm text-gray-700">{b.t}</h5>
-                <p className="text-[8px] text-gray-400 mt-1">{b.d}</p>
-                <p className="text-[8px] font-semibold text-gray-500 mt-1">{b.m}</p>
+              <div key={b.b} className="bg-white rounded-lg p-3 shadow-sm flex flex-col">
+                <div className={`${b.c} text-white text-center py-1 rounded-md text-[9px] font-bold mb-1`}>{b.t}</div>
+                <p className="font-bold text-[9px] text-orange tracking-wide">{b.b}</p>
+                <h5 className="font-bold text-[10px] text-navy mt-0.5 leading-tight">{b.d}</h5>
+                <p className="text-[8px] text-gray-400 mt-1 leading-snug flex-1">{b.sub}</p>
               </div>
             ))}
           </div>
@@ -167,47 +177,57 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
     /* ─── B1 CONTEXTO ─── */
     case 'b1x':
       return (
-        <div className="slide flex flex-col justify-start p-6">
-          <Pill text="Bloque 1 · Descubrir" bg="#FF6B00" />
-          <h2 className="text-xl font-extrabold text-navy my-2">¿Por qué People Intelligence?</h2>
-          <div className="w-16 h-0.5 bg-orange mb-3" />
+        <div className="slide flex flex-col justify-start p-6" style={{ background: '#f8fafc' }}>
+          <SectionTitle eyebrow="BLOQUE 1" title="La situaci\u00f3n actual" />
+          <p className="text-xs text-gray-500 -mt-2 mb-3">Hoy gestionamos el talento con informaci\u00f3n incompleta</p>
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-white rounded-lg p-3 shadow-sm border-t-[3px] border-red-500">
-              <h4 className="text-red-600 font-bold text-xs mb-1">El problema</h4>
-              <p className="text-xs text-gray-600">
-                La información de talento está <b>fragmentada en múltiples sistemas</b>. No hay visibilidad analítica sobre skills, certificaciones y trayectorias reales del staff.
-              </p>
-            </div>
-            <div className="bg-white rounded-lg p-3 shadow-sm border-t-[3px] border-green-500">
-              <h4 className="text-green-600 font-bold text-xs mb-1">La oportunidad</h4>
-              <p className="text-xs text-gray-600">
-                Un sistema de People Intelligence permite <b>decisiones basadas en datos</b>, asignación inteligente y desarrollo estratégico del talento académico.
-              </p>
-            </div>
+            {[
+              { t: 'CVs que no se vuelven a usar', d: 'Los archivos se depositan en carpetas y no se vuelven a consultar. La informaci\u00f3n muere al momento de la contrataci\u00f3n.', c: 'border-red-400' },
+              { t: 'Decisiones basadas en t\u00edtulos', d: 'Sabemos qu\u00e9 estudi\u00f3 cada persona, pero no qu\u00e9 sabe hacer hoy. Las credenciales no reflejan la capacidad real.', c: 'border-amber-400' },
+              { t: 'Datos fragmentados', d: 'La informaci\u00f3n del personal est\u00e1 dispersa entre GTH, TI, jefaturas y correos. No existe una visi\u00f3n unificada del talento.', c: 'border-amber-400' },
+              { t: 'Sin visibilidad de skills ocultos', d: 'Hay expertos en temas clave que nadie conoce porque nunca se ha mapeado lo que realmente saben hacer.', c: 'border-red-400' },
+            ].map(card => (
+              <div key={card.t} className={`bg-white rounded-lg p-3 shadow-sm border-l-[3px] ${card.c}`}>
+                <h4 className="font-bold text-xs text-navy mb-1">{card.t}</h4>
+                <p className="text-xs text-gray-500 leading-relaxed">{card.d}</p>
+              </div>
+            ))}
           </div>
-          <div className="mt-3 bg-navy rounded-lg p-2 text-center">
-            <p className="text-orange text-[9px] font-bold">DOS IMPACTOS ESTRATÉGICOS</p>
-            <p className="text-white text-[10px]">Visibilidad de talento + Capacidad de decisión</p>
+          <div className="mt-3 bg-navy/5 rounded-lg p-2 text-center">
+            <p className="text-xs text-gray-600 italic">\u201cCENTRUM forma ejecutivos para gestionar organizaciones de clase mundial. Debe gestionar su propio talento con ese mismo nivel de exigencia.\u201d</p>
           </div>
           <Footer />
         </div>
       );
 
-    /* ─── B1 OLTP/OLAP ─── */
+    /* ─── B1 DOS CAPAS ─── */
     case 'b1db':
       return (
         <div className="slide flex flex-col justify-center p-6">
-          <Pill text="Bloque 1 · Descubrir" bg="#FF6B00" />
-          <h2 className="text-xl font-extrabold text-navy my-2">Transaccional vs. Analítica</h2>
-          <p className="text-xs text-gray-500 mb-3">Hay dos mundos de datos. No los vamos a mezclar — los vamos a <b className="text-navy">conectar</b>.</p>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-white rounded-lg p-3 shadow-sm border-t-[3px] border-orange">
-              <h4 className="text-orange font-bold text-xs mb-1">OLTP — Transaccional</h4>
-              <p className="text-xs text-gray-600">Los sistemas del día a día: registrar un grado, actualizar un CV, asignar un curso. Cada acción individual.</p>
+          <SectionTitle eyebrow="BLOQUE 1" title="El sistema tiene dos capas" />
+          <p className="text-xs text-gray-500 -mt-2 mb-3">Una para operar el d\u00eda a d\u00eda \u00b7 Otra para tomar decisiones estrat\u00e9gicas</p>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white rounded-xl p-4 shadow-sm border-t-[3px] border-orange">
+              <p className="text-orange font-bold text-xs mb-2">CAPA OPERATIVA</p>
+              <p className="text-[9px] text-gray-500 mb-2">Lo que GTH usa para trabajar d\u00eda a d\u00eda</p>
+              <ul className="space-y-1">
+                {['Registrar datos', 'Cargar grados / certificaciones', 'Asignar skills', 'Verificar credenciales', 'Gestionar estados y cambios de rol'].map(item => (
+                  <li key={item} className="flex items-center gap-1.5 text-xs text-gray-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange shrink-0" />{item}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="bg-white rounded-lg p-3 shadow-sm border-t-[3px] border-teal">
-              <h4 className="text-teal font-bold text-xs mb-1">OLAP — Analítica</h4>
-              <p className="text-xs text-gray-600">La capa inteligente: ¿cuántos docentes tienen PhD? ¿Qué skills faltan? Análisis, patrones, dashboards.</p>
+            <div className="bg-white rounded-xl p-4 shadow-sm border-t-[3px] border-teal">
+              <p className="text-teal font-bold text-xs mb-2">CAPA ANAL\u00cdTICA</p>
+              <p className="text-[9px] text-gray-500 mb-2">Lo que la Direcci\u00f3n consulta para decidir</p>
+              <ul className="space-y-1">
+                {['\u00bfQui\u00e9n puede liderar este proyecto?', '\u00bfQu\u00e9 skills nos faltan para 2027?', '\u00bfC\u00f3mo est\u00e1 distribuido el talento?', '\u00bfQui\u00e9n est\u00e1 listo para ascenso?', '\u00bfQu\u00e9 roles tienen mayor brecha?'].map(item => (
+                  <li key={item} className="flex items-center gap-1.5 text-xs text-gray-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal shrink-0" />{item}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
           <Footer />
@@ -219,10 +239,10 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
       return (
         <div className="slide-dark flex flex-col items-center justify-center text-center p-8">
           <div className="absolute top-0 left-0 right-0 h-1 bg-orange" />
-          <Pill text="Bloque 1 · Descubrir" bg="#FF6B00" />
-          <h2 className="text-2xl font-extrabold text-white mt-4 mb-2">Cuando escuchan<br /><span className="text-orange">People Intelligence</span>...</h2>
-          <p className="text-gray-400 text-sm">¿qué se imaginan?</p>
-          <div className="w-16 h-0.5 bg-orange my-4" />
+          <p className="text-orange font-bold tracking-[2px] text-[9px] mb-3">DIN\u00c1MICA \u00b7 ESCRITURA SILENCIOSA</p>
+          <h2 className="text-2xl font-extrabold text-white mt-2 mb-2">Cuando escuchan People Intelligence...<br />\u00bfqu\u00e9 se imaginan?</h2>
+          <p className="text-gray-400 text-sm mb-4">\u23f1 5 minutos \u00b7 Todas las ideas valen \u00b7 Silencio absoluto durante la escritura</p>
+          <div className="w-16 h-0.5 bg-orange mb-4" />
           {participantUrl ? (
             <div className="flex items-center gap-6 mt-2">
               <div className="bg-white p-3 rounded-xl shadow-lg">
@@ -349,25 +369,15 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
         </div>
       );
 
-    /* ─── B2 INTRO (¿Por qué funcionalidades?) ─── */
+    /* ─── B2 INTRO ─── */
     case 'b2w1':
       return (
         <div className="slide-dark flex flex-col items-center justify-center text-center p-8">
           <div className="absolute top-0 left-0 right-0 h-1 bg-orange" />
-          <Pill text="Bloque 2 · Funcionalidades" bg="#FF6B00" />
-          <h2 className="text-2xl font-extrabold text-white mt-4 mb-2">¿Qué debería <span className="text-orange">hacer</span> el sistema?</h2>
-          <p className="text-gray-400 text-sm mb-4">Vamos a definir funcionalidades desde lo operativo y lo analítico</p>
-          <div className="w-16 h-0.5 bg-orange mb-4" />
-          <div className="grid grid-cols-2 gap-4 max-w-lg">
-            <div className="bg-white/10 rounded-lg p-3">
-              <p className="text-orange font-bold text-xs mb-1">Parte A</p>
-              <p className="text-gray-300 text-xs">Operaciones: qué acciones cotidianas debe soportar</p>
-            </div>
-            <div className="bg-white/10 rounded-lg p-3">
-              <p className="text-teal font-bold text-xs mb-1">Parte B</p>
-              <p className="text-gray-300 text-xs">Preguntas: qué necesitan responder con datos</p>
-            </div>
-          </div>
+          <p className="text-orange font-bold tracking-[3px] text-[10px] mb-4">BLOQUE 2</p>
+          <h2 className="text-3xl font-extrabold text-white mb-2">Funcionalidades del Sistema</h2>
+          <div className="w-16 h-0.5 bg-orange my-3" />
+          <p className="text-gray-400 text-sm">Operaciones \u00b7 Preguntas anal\u00edticas por actor</p>
         </div>
       );
 
@@ -397,17 +407,34 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
     /* ─── B2A CONTEXTO ─── */
     case 'b2ax':
       return (
-        <div className="slide-dark flex flex-col items-center justify-center text-center p-8">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-orange" />
-          <Pill text="Bloque 2A · Operaciones" bg="#FF6B00" />
-          <h2 className="text-xl font-extrabold text-white mt-4 mb-2">Imaginen que llega un<br />nuevo colaborador</h2>
-          <p className="text-gray-400 text-sm mt-2 leading-relaxed max-w-md">
-            ¿Qué acciones tiene que hacer GTH en sus sistemas?<br />
-            ¿Qué datos hay que registrar?<br />
-            ¿Qué pasos son manuales hoy?
-          </p>
-          <div className="w-16 h-0.5 bg-orange my-4" />
-          <p className="text-gray-500 text-[10px]">Vamos a listar esas operaciones entre todos</p>
+        <div className="slide flex flex-col justify-start p-6" style={{ background: '#f8fafc' }}>
+          <SectionTitle eyebrow="PARTE A" title="Operaciones del sistema" />
+          <p className="text-xs text-gray-500 -mt-2 mb-3">Imaginen que llega un nuevo colaborador a CENTRUM. \u00bfQu\u00e9 informaci\u00f3n necesitan registrar? \u00bfC\u00f3mo lo hacen hoy?</p>
+          <div className="overflow-auto flex-1 min-h-0">
+            <table className="w-full text-xs border-collapse">
+              <thead>
+                <tr>
+                  <th className="bg-orange text-white px-3 py-1.5 text-left text-[9px] w-[70%]">Operaci\u00f3n</th>
+                  <th className="bg-orange text-white px-3 py-1.5 text-left text-[9px] w-[30%]">Prioridad</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ['Registrar datos del nuevo colaborador', 'Cr\u00edtica'],
+                  ['Cargar grados acad\u00e9micos y certificaciones', 'Cr\u00edtica'],
+                  ['Asignar skills iniciales por puesto', 'Alta'],
+                  ['Verificar y validar credenciales', 'Alta'],
+                  ['Gestionar cambios de rol o \u00e1rea', 'Media'],
+                ].map(([op, pri]) => (
+                  <tr key={op} className="border-b border-gray-100">
+                    <td className="px-3 py-2 font-semibold text-gray-700">{op}</td>
+                    <td className="px-3 py-2"><Badge text={pri} variant={pri === 'Cr\u00edtica' ? 'critical' : pri === 'Alta' ? 'high' : 'medium'} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <Footer />
         </div>
       );
 
@@ -451,7 +478,19 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
       );
 
     /* ─── B2A ORGANIZAR ─── */
-    case 'b2a2':
+    case 'b2a2': {
+      const items = artifacts?.items || [];
+      const moveItem = (fromIndex: number, toIndex: number) => {
+        if (fromIndex === toIndex || fromIndex < 0 || toIndex < 0) return;
+        const next = [...items];
+        const [moved] = next.splice(fromIndex, 1);
+        next.splice(toIndex, 0, moved);
+        onUpdateArtifactsItems?.(next);
+      };
+      const setPriority = (index: number, priority: string) => {
+        const next = items.map((it: any, i: number) => (i === index ? { ...it, priority } : it));
+        onUpdateArtifactsItems?.(next);
+      };
       return (
         <div className="slide flex flex-col justify-start p-4">
           <div className="flex items-center justify-between mb-2">
@@ -459,27 +498,59 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
               <Pill text="Bloque 2A · Organizar" bg="#FF6B00" />
               <h2 className="text-lg font-extrabold text-navy mt-1">Priorizar operaciones</h2>
             </div>
-            <span className="text-[10px] text-gray-400">{(artifacts?.items || []).length} items</span>
+            <span className="text-[10px] text-gray-400">{items.length} items</span>
           </div>
+          <p className="text-[9px] text-gray-400 mb-2">Arrastra cada fila para reordenar prioridad.</p>
           <div className="overflow-auto flex-1 min-h-0 space-y-1">
-            {(artifacts?.items || []).map((item: any, i: number) => (
-              <div key={i} className="flex items-center gap-2 px-2 py-1.5 bg-white rounded-lg border-l-[3px] border-navy shadow-sm">
+            {items.map((item: any, i: number) => (
+              <div
+                key={i}
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData('text/plain', String(i));
+                  setDragContext('b2a2');
+                  setDragFromIndex(i);
+                  setDragOverIndex(i);
+                }}
+                onDragEnter={() => {
+                  if (dragContext === 'b2a2') setDragOverIndex(i);
+                }}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const from = Number(e.dataTransfer.getData('text/plain'));
+                  moveItem(from, i);
+                  resetDrag();
+                }}
+                onDragEnd={resetDrag}
+                className={`flex items-center gap-2 px-2 py-1.5 bg-white rounded-lg border-l-[3px] border-navy shadow-sm transition-all ${
+                  dragContext === 'b2a2' && dragFromIndex === i ? 'opacity-55 scale-[0.99]' : ''
+                } ${
+                  dragContext === 'b2a2' && dragOverIndex === i ? 'ring-2 ring-orange/50 bg-orange/5' : ''
+                }`}
+              >
                 <span className="text-gray-300 text-base cursor-grab shrink-0">⠿</span>
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-navy text-[10px] truncate">{item.title}</p>
                   {item.detail && <p className="text-[8px] text-gray-400 truncate">{item.detail}</p>}
                 </div>
-                <span className={`shrink-0 px-2 py-0.5 rounded text-[8px] font-semibold text-white ${
-                  item.priority === 'Crítica' ? 'bg-red-500' :
-                  item.priority === 'Alta' ? 'bg-orange' :
-                  item.priority === 'Media' ? 'bg-amber-500' : 'bg-gray-400'
-                }`}>{item.priority || '—'}</span>
+                <select
+                  value={item.priority || 'Media'}
+                  onChange={(e) => setPriority(i, e.target.value)}
+                  className="shrink-0 text-[8px] font-semibold bg-gray-50 border border-gray-200 rounded px-1.5 py-0.5 text-navy"
+                >
+                  <option value="Crítica">Crítica</option>
+                  <option value="Alta">Alta</option>
+                  <option value="Media">Media</option>
+                  <option value="Futura">Futura</option>
+                </select>
               </div>
             ))}
           </div>
           <Footer />
         </div>
       );
+    }
 
     /* ─── B2A SÍNTESIS ─── */
     case 'b2ay':
@@ -524,46 +595,63 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
     /* ─── B2B CONTEXTO 1 ─── */
     case 'b2bx1':
       return (
-        <div className="slide-dark flex flex-col items-center justify-center text-center p-8">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-orange" />
-          <Pill text="Bloque 2B · Preguntas" bg="#0D9488" />
-          <h2 className="text-xl font-extrabold text-white mt-4 mb-2">¿Qué preguntas necesitan<br /><span className="text-teal">responder con datos</span>?</h2>
-          <p className="text-gray-400 text-sm mt-2 leading-relaxed max-w-md">
-            Ahora pensemos en lo analítico: reportes, indicadores, dashboards.<br />
-            ¿Qué necesitan saber que hoy no pueden responder fácilmente?
-          </p>
-          <div className="w-16 h-0.5 bg-teal my-4" />
-          <p className="text-gray-500 text-[10px]">Vamos a listar esas preguntas entre todos</p>
+        <div className="slide flex flex-col justify-start p-6" style={{ background: '#f8fafc' }}>
+          <SectionTitle eyebrow="PARTE B" title="Preguntas anal\u00edticas" />
+          <p className="text-xs text-gray-500 -mt-2 mb-3">\u00bfQu\u00e9 preguntas debe poder responder el sistema? \u00bfPara qui\u00e9n?</p>
+          <div className="overflow-auto flex-1 min-h-0">
+            <table className="w-full text-xs border-collapse">
+              <thead>
+                <tr>
+                  <th className="bg-teal text-white px-3 py-1.5 text-left text-[9px] w-[65%]">Pregunta</th>
+                  <th className="bg-teal text-white px-3 py-1.5 text-left text-[9px] w-[35%]">Actor</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ['\u00bfQu\u00e9 skills tiene cada colaborador y en qu\u00e9 nivel?', 'GTH / Direcci\u00f3n'],
+                  ['\u00bfQui\u00e9n est\u00e1 listo para asumir el Proyecto X hoy?', 'Direcci\u00f3n'],
+                  ['\u00bfQu\u00e9 brecha de skills existe vs. objetivos 2027?', 'Direcci\u00f3n'],
+                  ['\u00bfC\u00f3mo evolucionaron mis skills en el \u00faltimo a\u00f1o?', 'Colaborador'],
+                  ['\u00bfQu\u00e9 candidatos internos califican para este puesto?', 'GTH'],
+                ].map(([q, a]) => (
+                  <tr key={q} className="border-b border-gray-100">
+                    <td className="px-3 py-2 font-semibold text-gray-700">{q}</td>
+                    <td className="px-3 py-2 text-gray-500">{a}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           {onTriggerSeeds && (
             <button
               onClick={onTriggerSeeds}
               disabled={seedsLoading}
-              className="mt-5 px-4 py-2 bg-teal/80 hover:bg-teal text-white rounded-lg text-[11px] font-semibold transition disabled:opacity-50"
+              className="mt-3 self-start px-4 py-2 bg-teal/80 hover:bg-teal text-white rounded-lg text-[11px] font-semibold transition disabled:opacity-50"
             >
-              {seedsLoading ? '⏳ Generando semillas…' : '🤖 Pre-generar preguntas con IA'}
+              {seedsLoading ? '\u23f3 Generando semillas\u2026' : '\uD83E\uDD16 Pre-generar preguntas con IA'}
             </button>
           )}
+          <Footer />
         </div>
       );
 
     /* ─── B2B ACTORES ─── */
     case 'b2bx2':
       return (
-        <div className="slide flex flex-col justify-start p-6">
-          <Pill text="Bloque 2B · Preguntas" bg="#0D9488" />
-          <h2 className="text-xl font-extrabold text-navy my-2">¿Quién pregunta?</h2>
-          <p className="text-[10px] text-gray-500 mb-3">Cada pregunta tiene un actor principal. Esto nos ayuda a diseñar los dashboards correctos.</p>
-          <div className="grid grid-cols-4 gap-2">
+        <div className="slide flex flex-col justify-center p-6">
+          <SectionTitle eyebrow="PARTE B" title="Actores del sistema" />
+          <p className="text-xs text-gray-500 -mt-2 mb-3">Si el sistema ya existiera y tuviera toda la informaci\u00f3n... \u00bfqu\u00e9 le preguntar\u00edan?</p>
+          <div className="grid grid-cols-4 gap-3">
             {[
-              { a: '👤', n: 'Colaborador', d: 'El docente o staff que consulta su propia información', c: 'bg-blue-50 border-blue-200', tc: 'text-blue-700' },
-              { a: '🏢', n: 'GTH', d: 'El equipo de gestión humana que administra y reporta', c: 'bg-green-50 border-green-200', tc: 'text-green-700' },
-              { a: '📊', n: 'Dirección', d: 'Decisores que necesitan visión estratégica', c: 'bg-purple-50 border-purple-200', tc: 'text-purple-700' },
-              { a: '🔗', n: 'Otros', d: 'Sistemas, auditoría, comités externos', c: 'bg-gray-50 border-gray-200', tc: 'text-gray-700' },
+              { a: '👤', n: 'Colaborador', d: 'Quiere saber en qu\u00e9 nivel est\u00e1 y c\u00f3mo crecer en su carrera dentro de CENTRUM.', c: 'bg-blue-50 border-blue-200', tc: 'text-blue-700' },
+              { a: '🏢', n: 'GTH', d: 'Necesita visibilidad completa del talento para tomar decisiones sobre contrataci\u00f3n y desarrollo.', c: 'bg-green-50 border-green-200', tc: 'text-green-700' },
+              { a: '📊', n: 'Direcci\u00f3n', d: 'Requiere analytics de alto nivel para alinear el talento a los objetivos estrat\u00e9gicos 2027.', c: 'bg-purple-50 border-purple-200', tc: 'text-purple-700' },
+              { a: '🔗', n: 'Otros', d: 'Coordinadores acad\u00e9micos, investigadores, jefes de proyecto con necesidades espec\u00edficas.', c: 'bg-gray-50 border-gray-200', tc: 'text-gray-700' },
             ].map(actor => (
               <div key={actor.n} className={`rounded-lg p-3 border ${actor.c} text-center`}>
                 <p className="text-2xl mb-1">{actor.a}</p>
                 <h5 className={`font-bold text-sm ${actor.tc}`}>{actor.n}</h5>
-                <p className="text-[8px] text-gray-500 mt-1">{actor.d}</p>
+                <p className="text-[9px] text-gray-500 mt-1 leading-snug">{actor.d}</p>
               </div>
             ))}
           </div>
@@ -615,7 +703,15 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
       );
 
     /* ─── B2B ORGANIZAR ─── */
-    case 'b2b2':
+    case 'b2b2': {
+      const items = artifacts?.items || [];
+      const moveItem = (fromIndex: number, toIndex: number) => {
+        if (fromIndex === toIndex || fromIndex < 0 || toIndex < 0) return;
+        const next = [...items];
+        const [moved] = next.splice(fromIndex, 1);
+        next.splice(toIndex, 0, moved);
+        onUpdateArtifactsItems?.(next);
+      };
       return (
         <div className="slide flex flex-col justify-start p-4">
           <div className="flex items-center justify-between mb-2">
@@ -623,11 +719,37 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
               <Pill text="Bloque 2B · Organizar" bg="#0D9488" />
               <h2 className="text-lg font-extrabold text-navy mt-1">Organizar preguntas</h2>
             </div>
-            <span className="text-[10px] text-gray-400">{(artifacts?.items || []).length} items</span>
+            <span className="text-[10px] text-gray-400">{items.length} items</span>
           </div>
+          <p className="text-[9px] text-gray-400 mb-2">Arrastra para cambiar el orden de lectura.</p>
           <div className="overflow-auto flex-1 min-h-0 space-y-1">
-            {(artifacts?.items || []).map((item: any, i: number) => (
-              <div key={i} className="flex items-center gap-2 px-2 py-1.5 bg-white rounded-lg border-l-[3px] border-teal shadow-sm">
+            {items.map((item: any, i: number) => (
+              <div
+                key={i}
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData('text/plain', String(i));
+                  setDragContext('b2b2');
+                  setDragFromIndex(i);
+                  setDragOverIndex(i);
+                }}
+                onDragEnter={() => {
+                  if (dragContext === 'b2b2') setDragOverIndex(i);
+                }}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const from = Number(e.dataTransfer.getData('text/plain'));
+                  moveItem(from, i);
+                  resetDrag();
+                }}
+                onDragEnd={resetDrag}
+                className={`flex items-center gap-2 px-2 py-1.5 bg-white rounded-lg border-l-[3px] border-teal shadow-sm transition-all ${
+                  dragContext === 'b2b2' && dragFromIndex === i ? 'opacity-55 scale-[0.99]' : ''
+                } ${
+                  dragContext === 'b2b2' && dragOverIndex === i ? 'ring-2 ring-teal/45 bg-teal/5' : ''
+                }`}
+              >
                 <span className="text-gray-300 text-base cursor-grab shrink-0">⠿</span>
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-navy text-[10px] truncate">{item.title}</p>
@@ -647,6 +769,7 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
           <Footer />
         </div>
       );
+    }
 
     /* ─── B2B SÍNTESIS ─── */
     case 'b2by':
@@ -688,21 +811,20 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
         </div>
       );
 
-    /* ─── B3 INTRO (¿Por qué datos?) ─── */
+    /* ─── B3 INTRO ─── */
     case 'b3w1':
       return (
         <div className="slide-dark flex flex-col items-center justify-center text-center p-8">
           <div className="absolute top-0 left-0 right-0 h-1 bg-teal" />
-          <Pill text="Bloque 3 · Datos" bg="#0D9488" />
-          <h2 className="text-2xl font-extrabold text-white mt-4 mb-2">¿Qué <span className="text-teal">datos</span> necesitamos?</h2>
-          <p className="text-gray-400 text-sm mb-4">Vamos a inventariar los campos de información del sistema</p>
-          <div className="w-16 h-0.5 bg-teal mb-4" />
-          <p className="text-gray-500 text-[10px]">Cada dato tiene: nombre, fuente y nivel de prioridad</p>
+          <p className="text-teal font-bold tracking-[3px] text-[10px] mb-4">BLOQUE 3</p>
+          <h2 className="text-3xl font-extrabold text-white mb-2">Campos de Datos y Fuentes</h2>
+          <div className="w-16 h-0.5 bg-teal my-3" />
+          <p className="text-gray-400 text-sm mb-4">Sin datos no hay operaciones ni preguntas posibles.</p>
           {onTriggerSeeds && (
             <button
               onClick={onTriggerSeeds}
               disabled={seedsLoading}
-              className="mt-5 px-4 py-2 bg-teal/80 hover:bg-teal text-white rounded-lg text-[11px] font-semibold transition disabled:opacity-50"
+              className="mt-2 px-4 py-2 bg-teal/80 hover:bg-teal text-white rounded-lg text-[11px] font-semibold transition disabled:opacity-50"
             >
               {seedsLoading ? '⏳ Generando campos…' : '🤖 Pre-generar campos con IA'}
             </button>
@@ -713,22 +835,36 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
     /* ─── B3 DIMENSIONES ─── */
     case 'b3w2':
       return (
-        <div className="slide flex flex-col justify-start p-6">
-          <Pill text="Bloque 3 · Datos" bg="#0D9488" />
-          <h2 className="text-xl font-extrabold text-navy my-2">3 dimensiones por campo</h2>
-          <div className="w-16 h-0.5 bg-teal mb-4" />
+        <div className="slide flex flex-col justify-center p-6">
+          <SectionTitle eyebrow="BLOQUE 3" title="Las tres dimensiones de cada campo" />
+          <p className="text-xs text-gray-500 -mt-2 mb-4">De cada dato necesitamos saber tres cosas</p>
           <div className="grid grid-cols-3 gap-3">
-            {[
-              { n: '1', t: '¿Qué dato?', d: 'El nombre del campo: grado académico, skill certificado, antigüedad...', c: 'bg-teal' },
-              { n: '2', t: '¿Dónde está?', d: 'La fuente actual: GTH tiene, PUCP tiene, es nuevo...', c: 'bg-navy' },
-              { n: '3', t: '¿Qué tan importante?', d: 'Prioridad: Crítico, Alto, Deseable', c: 'bg-orange' },
-            ].map(d => (
-              <div key={d.n} className="bg-white rounded-lg p-4 shadow-sm text-center">
-                <div className={`w-8 h-8 rounded-full ${d.c} text-white flex items-center justify-center mx-auto mb-2 text-sm font-bold`}>{d.n}</div>
-                <h5 className="font-bold text-sm text-gray-700 mb-1">{d.t}</h5>
-                <p className="text-xs text-gray-500">{d.d}</p>
+            <div className="bg-white rounded-xl p-4 shadow-sm text-center">
+              <div className="w-8 h-8 rounded-full bg-teal text-white flex items-center justify-center mx-auto mb-2 text-sm font-bold">1</div>
+              <h5 className="font-bold text-sm text-navy mb-1">\u00bfQu\u00e9 es?</h5>
+              <p className="text-[9px] text-gray-500 mb-2">Definici\u00f3n del campo. Nombre y descripci\u00f3n del dato.</p>
+              <p className="text-[8px] text-orange italic">Ej: Horas de capacitaci\u00f3n anual por colaborador.</p>
+            </div>
+            <div className="bg-white rounded-xl p-4 shadow-sm text-center">
+              <div className="w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center mx-auto mb-2 text-sm font-bold">2</div>
+              <h5 className="font-bold text-sm text-navy mb-1">\u00bfD\u00f3nde est\u00e1 hoy?</h5>
+              <p className="text-[9px] text-gray-500 mb-2">Fuente actual. \u00bfGTH lo tiene? \u00bfViene de otra \u00e1rea? \u00bfNo existe a\u00fan?</p>
+              <div className="flex flex-wrap gap-1 justify-center">
+                {['GTH lo tiene', 'Otra fuente', 'No existe a\u00fan'].map(b => (
+                  <span key={b} className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full text-[7px] font-semibold">{b}</span>
+                ))}
               </div>
-            ))}
+            </div>
+            <div className="bg-white rounded-xl p-4 shadow-sm text-center">
+              <div className="w-8 h-8 rounded-full bg-orange text-white flex items-center justify-center mx-auto mb-2 text-sm font-bold">3</div>
+              <h5 className="font-bold text-sm text-navy mb-1">\u00bfQu\u00e9 tan urgente?</h5>
+              <p className="text-[9px] text-gray-500 mb-2">Prioridad de implementaci\u00f3n.</p>
+              <div className="flex flex-wrap gap-1 justify-center">
+                {['Cr\u00edtica', 'Alta', 'Media', 'Futura'].map(b => (
+                  <span key={b} className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full text-[7px] font-semibold">{b}</span>
+                ))}
+              </div>
+            </div>
           </div>
           <Footer />
         </div>
@@ -862,19 +998,28 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
     case 'b4w1':
       return (
         <div className="slide flex flex-col justify-center p-6">
-          <Pill text="Bloque 4 · Gestión" bg="#059669" />
-          <h2 className="text-xl font-extrabold text-navy my-2">Gobernanza del proyecto</h2>
-          <div className="w-16 h-0.5 bg-green mb-3" />
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-white rounded-lg p-4 shadow-sm border-t-[3px] border-green-500 text-center">
-              <p className="text-xl mb-1">🔮</p>
-              <h4 className="text-green-600 font-bold text-sm mb-1">Predictivo</h4>
-              <p className="text-xs text-gray-500">El diseño del sistema anticipará necesidades. Gobernanza de datos, taxonomías, esquemas.</p>
+          <SectionTitle eyebrow="BLOQUE 4" title="C\u00f3mo gestionamos el proyecto" />
+          <p className="text-xs text-gray-500 -mt-2 mb-3">Modelo h\u00edbrido: gobernanza formal + ejecuci\u00f3n \u00e1gil</p>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white rounded-xl p-4 shadow-sm border-t-[3px] border-navy">
+              <p className="text-navy font-bold text-xs mb-2">GOBERNANZA FORMAL</p>
+              <ul className="space-y-1.5">
+                {['Project Charter (firmado por GTH y SC)', 'Actas de reuni\u00f3n (ACT-PIS-XXX)', 'Entregables con versiones', 'Sponsor institucional: Andrea Lazarte'].map(item => (
+                  <li key={item} className="flex items-start gap-1.5 text-xs text-gray-600">
+                    <span className="w-1.5 h-1.5 rounded-full bg-navy shrink-0 mt-1" />{item}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="bg-white rounded-lg p-4 shadow-sm border-t-[3px] border-orange text-center">
-              <p className="text-xl mb-1">🔄</p>
-              <h4 className="text-orange font-bold text-sm mb-1">Adaptativo</h4>
-              <p className="text-xs text-gray-500">La ejecución será ágil. Sprints, entregables incrementales, retroalimentación permanente.</p>
+            <div className="bg-white rounded-xl p-4 shadow-sm border-t-[3px] border-orange">
+              <p className="text-orange font-bold text-xs mb-2">EJECUCI\u00d3N \u00c1GIL</p>
+              <ul className="space-y-1.5">
+                {['Reuni\u00f3n semanal SC \u00d7 GTH (30 min, d\u00eda por definir)', 'Sprints de 2 semanas', 'Herramientas compartidas: Notion + Google Drive'].map(item => (
+                  <li key={item} className="flex items-start gap-1.5 text-xs text-gray-600">
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange shrink-0 mt-1" />{item}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
           <Footer />
@@ -907,19 +1052,17 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
     case 'b4t':
       return (
         <div className="slide flex flex-col justify-center p-6">
-          <Pill text="Bloque 4 · Gestión" bg="#059669" />
-          <h2 className="text-lg font-extrabold text-navy mb-3">Herramientas de trabajo</h2>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-white rounded-lg p-4 shadow-sm text-center border-t-[3px] border-navy">
-              <h4 className="text-navy font-bold text-sm mb-1">Notion</h4>
-              <p className="text-xs text-gray-500">Gestión del proyecto: tareas, backlog, seguimiento de decisiones y avances.</p>
+          <SectionTitle eyebrow="BLOQUE 4" title="C\u00f3mo gestionaremos el proyecto" />
+          <div className="grid grid-cols-2 gap-4 mt-2">
+            <div className="bg-white rounded-xl p-5 shadow-sm border-t-[3px] border-navy text-center">
+              <h4 className="text-navy font-bold text-lg mb-2">Notion</h4>
+              <p className="text-sm text-gray-500">Gesti\u00f3n de tareas, backlog, seguimiento de decisiones y avances del proyecto.</p>
             </div>
-            <div className="bg-white rounded-lg p-4 shadow-sm text-center border-t-[3px] border-teal">
-              <h4 className="text-teal font-bold text-sm mb-1">Google Drive</h4>
-              <p className="text-xs text-gray-500">Documentos compartidos: actas, entregables, archivos de referencia.</p>
+            <div className="bg-white rounded-xl p-5 shadow-sm border-t-[3px] border-teal text-center">
+              <h4 className="text-teal font-bold text-lg mb-2">Google Drive</h4>
+              <p className="text-sm text-gray-500">Documentos compartidos: actas, entregables, archivos de referencia. Accesos compartidos hoy.</p>
             </div>
           </div>
-          <p className="text-center text-[10px] text-navy font-semibold mt-3">Les enviaremos los accesos hoy mismo.</p>
           <Footer />
         </div>
       );

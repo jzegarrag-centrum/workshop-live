@@ -5,6 +5,7 @@ node_modules/
 .env.*.local
 .dev.vars
 out/
+.open-next/
 
 # Playwright test artifacts
 .playwright-cli/
