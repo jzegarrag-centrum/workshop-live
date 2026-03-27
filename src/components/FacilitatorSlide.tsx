@@ -1070,30 +1070,59 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
     /* ─── B4 FASES ─── */
     case 'b4p':
       return (
-        <div className="slide flex flex-col justify-start p-6">
-          <Pill text="Bloque 4 · Gestión" bg="#059669" />
-          <h2 className="text-lg font-extrabold text-navy mb-3">People Intelligence: 3 fases</h2>
+        <div className="slide flex flex-col justify-start p-6" style={{ background: '#f8fafc' }}>
+          <SectionTitle eyebrow="BLOQUE 4" title="Timeline del proyecto" />
+          <p className="text-xs text-gray-500 -mt-2 mb-3">De la prueba de concepto al sistema en producci\u00f3n</p>
           <div className="grid grid-cols-3 gap-3">
             {[
-              { n: 'Fase 1 · Dashboard + Piloto', w: '8 semanas', items: ['Dashboard de grados académicos', 'Piloto skills con 10-15 personas', 'PoC Report para Dir. General'], c: 'bg-orange', tc: 'text-orange' },
-              { n: 'Fase 2 · Skills Analytics', w: '12 semanas', items: ['Autorreporte 100% staff', 'Dashboard analítico', 'Gobernanza de datos'], c: 'bg-navy', tc: 'text-navy' },
-              { n: 'Fase 3 · Predictive', w: '8 semanas', items: ['Gap analysis', 'Asignación inteligente', 'Rutas de carrera'], c: 'bg-teal', tc: 'text-teal' },
+              {
+                n: '01', t: 'Prueba de concepto', w: 'Mar\u2013May 2026',
+                items: ['Taxonom\u00eda WEF + Nivel 5 CENTRUM', 'Dashboard grados (quick win)', 'Piloto 10\u201315 personas'],
+                deliverables: ['Instrumento Google Forms', 'Lista de participantes validada', 'Spot-check de supervisores', 'PoC Report para Direcci\u00f3n General'],
+                c: 'bg-orange', badge: 'ESTAMOS AQU\u00cd',
+              },
+              {
+                n: '02', t: 'Skills analytics', w: 'May\u2013Jul 2026',
+                items: ['Inventario skills 100%', 'Dashboard analytics', 'Gap analysis vs. objetivos 2027'],
+                deliverables: null,
+                c: 'bg-navy', badge: null,
+              },
+              {
+                n: '03', t: 'Inteligencia predictiva', w: 'Jul\u2013Ago 2026',
+                items: ['Motor asignaci\u00f3n inteligente', 'Gap analysis predictivo', 'Sistema en producci\u00f3n'],
+                deliverables: null,
+                c: 'bg-teal', badge: null,
+              },
             ].map(f => (
-              <div key={f.n} className="bg-white rounded-lg overflow-hidden shadow-sm">
-                <div className={`${f.c} text-white text-center py-1.5 text-[10px] font-bold`}>{f.n}</div>
-                <p className={`text-center ${f.tc} font-bold text-[10px] py-0.5`}>{f.w}</p>
-                <ul className="p-2 pl-4 space-y-1 list-disc">
-                  {f.items.map(item => (
-                    <li key={item} className="text-[9px] text-gray-600 leading-relaxed">{item}</li>
-                  ))}
-                </ul>
+              <div key={f.n} className="bg-white rounded-xl overflow-hidden shadow-sm">
+                <div className={`${f.c} px-3 py-2`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-white/60 text-[9px] font-bold">{f.n}</span>
+                    {f.badge && <span className="bg-white/20 text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full">{f.badge}</span>}
+                  </div>
+                  <p className="text-white font-bold text-xs">{f.t}</p>
+                  <p className="text-white/70 text-[8px]">{f.w}</p>
+                </div>
+                <div className="p-3">
+                  <ul className="space-y-1 mb-2">
+                    {f.items.map(item => (
+                      <li key={item} className="flex items-start gap-1 text-[9px] text-gray-600">
+                        <span className="text-gray-300 mt-0.5">·</span>{item}
+                      </li>
+                    ))}
+                  </ul>
+                  {f.deliverables && (
+                    <div className="border-t border-gray-100 pt-2">
+                      <p className="text-[8px] font-bold text-orange mb-1">ENTREGABLES CLAVE</p>
+                      {f.deliverables.map(d => (
+                        <p key={d} className="text-[8px] text-gray-500">\u2192 {d}</p>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
-          <p className="text-center mt-3 text-[10px]">
-            <span className="text-gray-400">Estamos aquí →</span>{' '}
-            <b className="text-orange">Fase 1: marzo – mayo 2026</b>
-          </p>
           <Footer />
         </div>
       );
@@ -1159,18 +1188,16 @@ export default function FacilitatorSlide({ stageId, sessionId, responses = [], a
           <div className="absolute top-0 left-0 right-0 h-1 bg-orange" />
           <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full" style={{ background: 'rgba(255,107,0,0.08)' }} />
           <img src="/logos/logo-blanco-centrum-pucp-v3.png" alt="CENTRUM PUCP" className="h-7 w-auto mb-3 opacity-90" />
-          <h2 className="text-3xl font-extrabold text-white">Gracias</h2>
-          <p className="text-gray-400 text-sm mt-2">Lo que construimos hoy es el cimiento<br />del sistema que gestionará el talento de CENTRUM.</p>
+          <p className="text-gray-300 text-sm mt-2 max-w-md leading-relaxed">\u201cLo que construimos hoy es el cimiento del sistema que gestionar\u00e1 el talento de CENTRUM.\u201d</p>
           <div className="w-16 h-0.5 bg-orange my-4" />
+          <p className="text-orange font-bold text-[9px] tracking-wide mb-3">Documentos que se generar\u00e1n y compartir\u00e1n con GTH:</p>
           <div className="flex gap-2 flex-wrap justify-center">
-            <span className="px-3 py-1.5 rounded-lg bg-orange text-white text-[10px] font-bold cursor-pointer hover:scale-105 transition-transform">Exportar Acta</span>
-            <span className="px-3 py-1.5 rounded-lg bg-navy text-white text-[10px] font-bold cursor-pointer hover:scale-105 transition-transform">Síntesis Funcionalidades</span>
-            <span className="px-3 py-1.5 rounded-lg bg-teal text-white text-[10px] font-bold cursor-pointer hover:scale-105 transition-transform">Inventario Campos</span>
-            <span className="px-3 py-1.5 rounded-lg bg-gray-700 text-white text-[10px] font-bold cursor-pointer hover:scale-105 transition-transform">Próximos Pasos</span>
+            <span className="px-3 py-1.5 rounded-lg bg-orange text-white text-[10px] font-bold cursor-pointer hover:scale-105 transition-transform">Acta de la reuni\u00f3n (ACT-PIS-004)</span>
+            <span className="px-3 py-1.5 rounded-lg bg-navy text-white text-[10px] font-bold cursor-pointer hover:scale-105 transition-transform">S\u00edntesis de Funcionalidades</span>
+            <span className="px-3 py-1.5 rounded-lg bg-teal text-white text-[10px] font-bold cursor-pointer hover:scale-105 transition-transform">Inventario de Campos de Datos</span>
+            <span className="px-3 py-1.5 rounded-lg bg-gray-700 text-white text-[10px] font-bold cursor-pointer hover:scale-105 transition-transform">Compromisos y Pr\u00f3ximos Pasos</span>
           </div>
-          <p className="text-gray-500 text-[8px] mt-4">
-            Documentos generados por IA desde los datos del taller<br />Workshop Live · Smart Centrum · CENTRUM PUCP
-          </p>
+          <p className="text-gray-500 text-[8px] mt-4">People Intelligence \u00b7 Smart Centrum \u00d7 GTH \u00b7 CENTRUM PUCP \u00b7 27.03.2026</p>
         </div>
       );
 
